@@ -17,6 +17,7 @@ public class UsuarioNuevoDTO {
     private String username;
     @Schema(name = "password", nullable = false, example = "miPass123456")
     private String password;
-    private PersonaDTO persona;
+    private PersonaNuevaDTO persona;
     private List<RolNuevoDTO> roles;
+    private Integer sucursalRadicacion;
 }

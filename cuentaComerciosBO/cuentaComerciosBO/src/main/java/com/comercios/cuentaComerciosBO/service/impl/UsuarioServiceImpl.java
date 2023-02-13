@@ -2,13 +2,15 @@ package com.comercios.cuentaComerciosBO.service.impl;
 
 import com.comercios.cuentaComerciosBO.dto.*;
 import com.comercios.cuentaComerciosBO.entity.Rol;
-import com.comercios.cuentaComerciosBO.entity.Usuario;
+import com.comercios.cuentaComerciosBO.entity.SucursalDeRadicacion;
 import com.comercios.cuentaComerciosBO.entity.UsuarioBO;
 import com.comercios.cuentaComerciosBO.exception.BadRequestException;
 import com.comercios.cuentaComerciosBO.exception.NotFoundException;
 import com.comercios.cuentaComerciosBO.mapper.PersonaMapper;
+import com.comercios.cuentaComerciosBO.mapper.PersonaNuevaMapper;
 import com.comercios.cuentaComerciosBO.mapper.RolMapper;
 import com.comercios.cuentaComerciosBO.mapper.UsuarioMapper;
+import com.comercios.cuentaComerciosBO.repository.SucursalDeRadicacionRepository;
 import com.comercios.cuentaComerciosBO.repository.UsuarioRepository;
 import com.comercios.cuentaComerciosBO.secutity.jwt.JwtProvider;
 import com.comercios.cuentaComerciosBO.service.contract.PersonaService;
@@ -42,6 +44,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private PersonaMapper personaMapper;
     @Autowired
+    private PersonaNuevaMapper personaNuevaMapper;
+    @Autowired
     private RolService rolService;
     @Autowired
     private RolMapper rolMapper;
@@ -51,6 +55,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtProvider jwtProvider;
+    @Autowired
+    private SucursalDeRadicacionRepository sucursalDeRadicacionRepository;
 
 
     @Override
@@ -74,11 +80,18 @@ public class UsuarioServiceImpl implements UsuarioService {
             Rol r = rolService.buscarPorNombre(rol.getRolName());
             roles.add(r);
         }
+        SucursalDeRadicacion sr = sucursalDeRadicacionRepository.findByCodigoSucursal(
+                dto.getSucursalRadicacion());
+        if (sr == null){
+            sr = sucursalDeRadicacionRepository.findById(1l).get();
+        }
         UsuarioBO usuario = new UsuarioBO();
         usuario.setUsername(dto.getUsername());
         usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
-        usuario.setPersona(personaMapper.personaDTOToPersona(dto.getPersona()));
+        usuario.setPersona(personaNuevaMapper
+                .personaNuevaDTOToPersona(dto.getPersona()));
         usuario.setRoles(roles);
+        usuario.setSucursalDeRadicacion(sr);
         return usuarioMapper.usuarioToUsuarioDTO(usuarioRepository.save(usuario));
     }
 
