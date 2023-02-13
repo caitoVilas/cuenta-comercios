@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/cuenta-comercios.iml" filepath="$PROJECT_DIR$/.idea/cuenta-comercios.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cuentaComercios/cuentaComercios/cuentaComercios.iml" filepath="$PROJECT_DIR$/cuentaComercios/cuentaComercios/cuentaComercios.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cuentaComerciosBO/cuentaComerciosBO/cuentaComerciosBO.iml" filepath="$PROJECT_DIR$/cuentaComerciosBO/cuentaComerciosBO/cuentaComerciosBO.iml" />
+    </modules>
+  </component>
+</project>
