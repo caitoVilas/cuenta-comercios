@@ -93,4 +93,17 @@ public class RolController {
         rolService.eliminarRol(id);
         return ResponseEntity.ok(null);
     }
+
+    @PutMapping("/permisos/{rolId}")
+    @Operation(description = "asignar permisos a un rol", summary = "asignar permisos a un rol")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "404", description = "not found"),
+            @ApiResponse(responseCode = "401", description = "unauthorized"),
+            @ApiResponse(responseCode = "500", description = "server error")
+    })
+    public ResponseEntity<RolDTO> asignarPermisos(@PathVariable Long rolId,
+                                                  @RequestParam List<Long> permisosId){
+        return ResponseEntity.ok(rolService.asignarPermisos(rolId, permisosId));
+    }
 }

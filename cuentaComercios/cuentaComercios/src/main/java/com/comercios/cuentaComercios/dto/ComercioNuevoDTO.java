@@ -30,4 +30,5 @@ public class ComercioNuevoDTO {
     private String telefono;
     @Schema(name = "usuarioId", required = true, example = "1")
     private Long usuarioId;
+    private Integer sucursalRadicacion;
 }

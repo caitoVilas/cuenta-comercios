@@ -5,6 +5,7 @@ import com.comercios.cuentaComercios.dto.ComercioNuevoDTO;
 import com.comercios.cuentaComercios.dto.PageableResponseDTO;
 import com.comercios.cuentaComercios.entity.Comercio;
 import com.comercios.cuentaComercios.entity.Documentacion;
+import com.comercios.cuentaComercios.entity.SucursalDeRadicacion;
 import com.comercios.cuentaComercios.entity.Usuario;
 import com.comercios.cuentaComercios.enums.DocumentacionTipo;
 import com.comercios.cuentaComercios.enums.EstadoComercio;
@@ -12,6 +13,8 @@ import com.comercios.cuentaComercios.enums.EstadoDocumentacion;
 import com.comercios.cuentaComercios.exception.BadRequestException;
 import com.comercios.cuentaComercios.exception.NotFoundException;
 import com.comercios.cuentaComercios.mapper.ComercioMapper;
+import com.comercios.cuentaComercios.mapper.SucursalDeRadicacionMapper;
+import com.comercios.cuentaComercios.repository.SucursalDeRadicacionRepository;
 import com.comercios.cuentaComercios.repository.ComercioRepository;
 import com.comercios.cuentaComercios.repository.DocumentacionRepository;
 import com.comercios.cuentaComercios.repository.UsuarioRepository;
@@ -45,6 +48,10 @@ public class ComercioServiceImpl implements ComercioService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private DocumentacionRepository documentacionRepository;
+    @Autowired
+    private SucursalDeRadicacionRepository sucursalDeRadicacionRepository;
+    @Autowired
+    private SucursalDeRadicacionMapper sucursalDeRadicacionMapper;
 
 
     @Override
@@ -68,6 +75,12 @@ public class ComercioServiceImpl implements ComercioService {
         }
         logger.info("creando comercio...");
         Comercio comercio = new Comercio();
+        SucursalDeRadicacion sr = sucursalDeRadicacionRepository.
+                findByCodigoSucursal(dto.getSucursalRadicacion());
+        if (sr == null){
+            logger.error("el comercio debe tener sucursal de radicacion");
+            throw new BadRequestException("el comercio debe tener sucursal de radicacion");
+        }
         comercio.setRazonSocial(dto.getRazonSocial());
         comercio.setDomicilio(dto.getDomicilio());
         comercio.setLocalidad(dto.getLocalidad());
@@ -79,6 +92,7 @@ public class ComercioServiceImpl implements ComercioService {
         comercio.setLimite(true);
         comercio.setUsuario(usuario);
         comercio.setEstado(EstadoComercio.DOCUMENTACION_PENDIENTE);
+        comercio.setSucursalDeRadicacion(sr);
         return comercioMapper.comercioToComercioDTO(comercioRepository.save(comercio));
     }
 

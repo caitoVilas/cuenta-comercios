@@ -19,7 +19,4 @@ public class Permiso {
     @Column(length = 70)
     private String descripcion;
     private boolean deleted;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "rol_id")
-    private Rol rol;
 }

@@ -3,11 +3,14 @@ package com.comercios.cuentaComerciosBO.service.impl;
 import com.comercios.cuentaComerciosBO.dto.PageableResponseDTO;
 import com.comercios.cuentaComerciosBO.dto.RolDTO;
 import com.comercios.cuentaComerciosBO.dto.RolNuevoDTO;
+import com.comercios.cuentaComerciosBO.entity.Permiso;
 import com.comercios.cuentaComerciosBO.entity.Rol;
 import com.comercios.cuentaComerciosBO.exception.BadRequestException;
 import com.comercios.cuentaComerciosBO.exception.NotFoundException;
+import com.comercios.cuentaComerciosBO.mapper.PermisoMapper;
 import com.comercios.cuentaComerciosBO.mapper.RolMapper;
 import com.comercios.cuentaComerciosBO.mapper.RolNuevoMapper;
+import com.comercios.cuentaComerciosBO.repository.PermisoRepository;
 import com.comercios.cuentaComerciosBO.repository.RolRepository;
 import com.comercios.cuentaComerciosBO.service.contract.RolService;
 import org.slf4j.Logger;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +33,10 @@ public class RolServiceImpl implements RolService {
     private RolNuevoMapper rolNuevoMapper;
     @Autowired
     private RolMapper rolMapper;
+    @Autowired
+    private PermisoRepository permisoRepository;
+    @Autowired
+    private PermisoMapper permisoMapper;
 
 
     @Override
@@ -93,5 +101,24 @@ public class RolServiceImpl implements RolService {
     @Override
     public Rol buscarPorNombre(String rolName) {
         return rolRepository.findByRolName(rolName);
+    }
+
+    @Override
+    public RolDTO asignarPermisos(Long rolId, List<Long> permisos) {
+        logger.info("inicio servicio asignar permisis a roles");
+        Rol rol = rolRepository.findById(rolId).orElseThrow(()->{
+            logger.error("rol no encontrado");
+            throw new NotFoundException("rol no encontrado");
+        });
+        List<Permiso> p = new ArrayList<>();
+        permisos.stream().forEach(permiso ->{
+            Permiso per = permisoRepository.findById(permiso).orElseThrow(()->{
+                logger.error("permiso no encontrado");
+                throw new NotFoundException("permiso no encontrado");
+            });
+            p.add(per);
+        });
+        rol.setPermisos(p);
+        return rolMapper.rolToRolDTO(rolRepository.save(rol));
     }
 }

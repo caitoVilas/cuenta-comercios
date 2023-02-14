@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -14,4 +16,6 @@ public class RolDTO {
     private Long id;
     @Schema(name = "rolName")
     private String rolName;
+    @Schema(name = "permisos")
+    private List<PermisoDTO> permisos;
 }

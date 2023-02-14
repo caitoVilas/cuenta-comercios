@@ -14,4 +14,5 @@ public interface RolService {
     PageableResponseDTO<RolDTO> buscarPaginado(int page, int size);
     void eliminarRol(Long rolId);
     Rol buscarPorNombre(String rolName);
+    RolDTO asignarPermisos(Long rolId, List<Long> permisos);
 }

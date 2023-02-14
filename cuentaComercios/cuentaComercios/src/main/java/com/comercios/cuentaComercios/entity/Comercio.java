@@ -46,4 +46,7 @@ public class Comercio {
     private Usuario usuario;
     @OneToMany(mappedBy = "comercio")
     private List<Documentacion> documentacion;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "sucursal_radicacion_id")
+    private SucursalDeRadicacion sucursalDeRadicacion;
 }

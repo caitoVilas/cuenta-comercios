@@ -20,6 +20,8 @@ public class Rol {
     @Column(length = 50)
     private String rolName;
     private boolean deleted;
-    @OneToMany(mappedBy = "rol")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "roles_permisos", joinColumns = @JoinColumn(name = "rol_id"),
+            inverseJoinColumns = @JoinColumn(name = "permiso_id"))
     private List<Permiso> permisos;
 }

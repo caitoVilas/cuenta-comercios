@@ -35,4 +35,6 @@ public class ComercioDTO {
     private EstadoComercio estado;
     @Schema(name = "usuario", required = true, example = "1")
     private UsuarioDTO usuario;
+    @Schema(name = "sucursalDeRadicacion")
+    private SucursalDeRadicacionDTO sucursalDeRadicacion;
 }
