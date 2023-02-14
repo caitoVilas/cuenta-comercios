@@ -1,5 +1,6 @@
 package com.comercios.cuentaComerciosBO.secutity;
 
+import com.comercios.cuentaComerciosBO.entity.SucursalDeRadicacion;
 import com.comercios.cuentaComerciosBO.entity.UsuarioBO;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,13 +14,15 @@ import java.util.stream.Collectors;
 public class UsuarioPrincipal implements UserDetails {
     private String username;
     private String password;
+    private SucursalDeRadicacion sucursalDeRadicacion;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UsuarioPrincipal build(UsuarioBO usuario){
         Collection<GrantedAuthority> authorities =
                 usuario.getRoles().stream().map(rol -> new SimpleGrantedAuthority(rol.getRolName()))
                         .collect(Collectors.toList());
-        return new UsuarioPrincipal(usuario.getUsername(), usuario.getPassword(), authorities);
+        return new UsuarioPrincipal(usuario.getUsername(), usuario.getPassword(), usuario.getSucursalDeRadicacion(),
+                authorities);
     }
 
     @Override
@@ -55,5 +58,9 @@ public class UsuarioPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public SucursalDeRadicacion getSucursalDeRadicacion() {
+        return sucursalDeRadicacion;
     }
 }

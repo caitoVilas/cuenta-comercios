@@ -41,4 +41,6 @@ public class ComercioDTO {
     private LocalDateTime updated;
     @Schema(name = "usuario")
     private UsuarioAppDTO usuario;
+    @Schema(name = "sucursalDeRadicacion")
+    private SucursalRadicacionDTO sucursalDeRadicacion;
 }

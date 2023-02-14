@@ -2,7 +2,9 @@ package com.comercios.cuentaComerciosBO.service.impl;
 
 import com.comercios.cuentaComerciosBO.dto.DocumentacionDTO;
 import com.comercios.cuentaComerciosBO.entity.Comercio;
+import com.comercios.cuentaComerciosBO.entity.Documentacion;
 import com.comercios.cuentaComerciosBO.exception.NotFoundException;
+import com.comercios.cuentaComerciosBO.exception.Unauthorized;
 import com.comercios.cuentaComerciosBO.mapper.ComercioMapper;
 import com.comercios.cuentaComerciosBO.mapper.DocumentacionMapper;
 import com.comercios.cuentaComerciosBO.repository.DocumentacionRepository;
@@ -26,6 +28,8 @@ public class DocumentacionServiceImpl implements DocumentacionService {
     private ComercioService comercioService;
     @Autowired
     private ComercioMapper comercioMapper;
+    @Autowired
+    private AuthorizationService authorizationService;
 
 
     @Override
@@ -39,5 +43,35 @@ public class DocumentacionServiceImpl implements DocumentacionService {
         logger.info("inciando busqueda de documentos");
         return documentacionMapper.documentacionListToDocumentacionDTOList(
                 documentacionRepository.findByComercio(comercio));
+    }
+
+    @Override
+    public void aprobacionOperador(Long documentoId) {
+        logger.info("inicio servicio autorizacion documento por operador");
+
+        Documentacion documento = documentacionRepository.findById(documentoId).orElseThrow(()->{
+            logger.error("no se encuentra el documento");
+            throw new NotFoundException("no se encuentra el documento");
+        });
+        if(!authorizationService.authorizeDocumentacion("ROLE_OPERADOR", 1l, documento)){
+            logger.error("no autorizado");
+            throw new Unauthorized("no autorizado");
+        }
+        logger.info("aprobando documento por operador...");
+    }
+
+    @Override
+    public void rechazoOperador(Long documentoId) {
+        logger.info("inicio servicio rechazo documento por operador");
+
+        Documentacion documento = documentacionRepository.findById(documentoId).orElseThrow(()->{
+            logger.error("no se encuentra el documento");
+            throw new NotFoundException("no se encuentra el documento");
+        });
+        if(!authorizationService.authorizeDocumentacion("ROLE_OPERADOR", 1l, documento)){
+            logger.error("no autorizado");
+            throw new Unauthorized("no autorizado");
+        }
+        logger.info("rechazando documento por operador...");
     }
 }

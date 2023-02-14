@@ -37,6 +37,7 @@ public class JwtProvider {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + expiration * 1000))
                 .claim("roles", getRoles(usuarioPrincipal))
+                .claim("sucursalDeRadicacion", usuarioPrincipal.getSucursalDeRadicacion())
                 .compact();
     }
 

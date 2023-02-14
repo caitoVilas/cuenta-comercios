@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface DocumentacionService {
     List<DocumentacionDTO> buscarPorComercio(Long comercioId);
+    void aprobacionOperador(Long documentoId);
+    void rechazoOperador(Long documentoId);
 }

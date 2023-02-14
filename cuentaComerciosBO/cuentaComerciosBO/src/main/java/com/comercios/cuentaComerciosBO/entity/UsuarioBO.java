@@ -1,5 +1,7 @@
 package com.comercios.cuentaComerciosBO.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
@@ -32,10 +34,11 @@ public class UsuarioBO {
     @JoinColumn(name = "persona_id")
     private Persona persona;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(name = "usuariosbo_roles", joinColumns = @JoinColumn(name = "usuario_id"),
     inverseJoinColumns = @JoinColumn(name = "rol_id"))
     private List<Rol> roles;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "sucursal_radicacion_id")
     private SucursalDeRadicacion sucursalDeRadicacion;
 

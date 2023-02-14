@@ -1,6 +1,7 @@
 package com.comercios.cuentaComerciosBO.entity;
 
 import com.comercios.cuentaComerciosBO.enums.EstadoComercio;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -42,4 +43,8 @@ public class Comercio {
     private Usuario usuario;
     @OneToMany(mappedBy = "comercio")
     private List<Documentacion> documentacion;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name = "sucursal_radicacion_id")
+    private SucursalDeRadicacion sucursalDeRadicacion;
 }

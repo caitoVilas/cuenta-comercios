@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,5 +36,33 @@ public class DocumentacionController {
         if (documentos.isEmpty())
             return ResponseEntity.noContent().build();
         return ResponseEntity.ok(documentos);
+    }
+
+    @PutMapping("/aprobacion-operador/{documentoId}")
+    @Operation(description = "aprobacion de documento por operador",
+            summary = "aprobacion de documento por operador")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "404", description = "not found"),
+            @ApiResponse(responseCode = "401", description = "unauthorized"),
+            @ApiResponse(responseCode = "500", description = "server error")
+    })
+    public ResponseEntity<?> aprobacionOperador(@PathVariable Long documentoId){
+        documentacionService.aprobacionOperador(documentoId);
+        return ResponseEntity.ok(null);
+    }
+
+    @PutMapping("/rechazo-operador/{documentoId}")
+    @Operation(description = "rechazo de documento por operador",
+            summary = "rechazo de documento por operador")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "404", description = "not found"),
+            @ApiResponse(responseCode = "401", description = "unauthorized"),
+            @ApiResponse(responseCode = "500", description = "server error")
+    })
+    public ResponseEntity<?> rechazoOperador(@PathVariable Long documentoId){
+        documentacionService.aprobacionOperador(documentoId);
+        return ResponseEntity.ok(null);
     }
 }
