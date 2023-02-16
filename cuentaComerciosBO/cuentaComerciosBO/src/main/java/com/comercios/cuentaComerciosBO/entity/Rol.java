@@ -24,8 +24,8 @@ public class Rol {
     private String rolName;
     private boolean deleted;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
     @JoinTable(name = "roles_permisos", joinColumns = @JoinColumn(name = "rol_id"),
             inverseJoinColumns = @JoinColumn(name = "permiso_id"))
+    @JsonIgnore
     private List<Permiso> permisos;
 }

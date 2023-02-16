@@ -8,4 +8,6 @@ public interface DocumentacionService {
     List<DocumentacionDTO> buscarPorComercio(Long comercioId);
     void aprobacionOperador(Long documentoId);
     void rechazoOperador(Long documentoId);
+    void aprobacionSupervisor(Long documentoId);
+    void rechazoSupervisor(Long documentoId);
 }

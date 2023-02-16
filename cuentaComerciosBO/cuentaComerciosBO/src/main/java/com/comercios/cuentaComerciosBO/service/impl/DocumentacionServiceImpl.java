@@ -3,11 +3,17 @@ package com.comercios.cuentaComerciosBO.service.impl;
 import com.comercios.cuentaComerciosBO.dto.DocumentacionDTO;
 import com.comercios.cuentaComerciosBO.entity.Comercio;
 import com.comercios.cuentaComerciosBO.entity.Documentacion;
+import com.comercios.cuentaComerciosBO.entity.Permiso;
+import com.comercios.cuentaComerciosBO.enums.EstadoComercio;
+import com.comercios.cuentaComerciosBO.enums.EstadoDocumentacion;
+import com.comercios.cuentaComerciosBO.exception.BadRequestException;
 import com.comercios.cuentaComerciosBO.exception.NotFoundException;
 import com.comercios.cuentaComerciosBO.exception.Unauthorized;
 import com.comercios.cuentaComerciosBO.mapper.ComercioMapper;
 import com.comercios.cuentaComerciosBO.mapper.DocumentacionMapper;
+import com.comercios.cuentaComerciosBO.repository.ComercioRepository;
 import com.comercios.cuentaComerciosBO.repository.DocumentacionRepository;
+import com.comercios.cuentaComerciosBO.repository.PermisoRepository;
 import com.comercios.cuentaComerciosBO.service.contract.ComercioService;
 import com.comercios.cuentaComerciosBO.service.contract.DocumentacionService;
 import org.slf4j.Logger;
@@ -25,9 +31,11 @@ public class DocumentacionServiceImpl implements DocumentacionService {
     @Autowired
     private DocumentacionMapper documentacionMapper;
     @Autowired
-    private ComercioService comercioService;
+    private ComercioRepository comercioRepository;
     @Autowired
     private ComercioMapper comercioMapper;
+    @Autowired
+    private PermisoRepository permisoRepository;
     @Autowired
     private AuthorizationService authorizationService;
 
@@ -35,11 +43,10 @@ public class DocumentacionServiceImpl implements DocumentacionService {
     @Override
     public List<DocumentacionDTO> buscarPorComercio(Long comercioId) {
         logger.info("iniciando servicio buscar documentacion por comercio");
-        Comercio comercio = comercioMapper.comercioDTOToComercio(comercioService.buscarPorId(comercioId));
-        if (comercio == null){
+        Comercio comercio = comercioRepository.findById(comercioId).orElseThrow(()->{
             logger.error("el comercio no se encuentra");
             throw new NotFoundException("el comercio no se encuentra");
-        }
+        });
         logger.info("inciando busqueda de documentos");
         return documentacionMapper.documentacionListToDocumentacionDTOList(
                 documentacionRepository.findByComercio(comercio));
@@ -53,11 +60,17 @@ public class DocumentacionServiceImpl implements DocumentacionService {
             logger.error("no se encuentra el documento");
             throw new NotFoundException("no se encuentra el documento");
         });
-        if(!authorizationService.authorizeDocumentacion("ROLE_OPERADOR", 1l, documento)){
+        Permiso permiso = permisoRepository.findByDescripcion("aprobacion nivel 1").orElseThrow(()->{
+            logger.error("permiso no encontrado");
+            throw new NotFoundException("permiso no encontrado");
+        });
+        if(!authorizationService.authorizeDocumentacion("ROLE_OPERADOR", permiso.getId(), documento)){
             logger.error("no autorizado");
             throw new Unauthorized("no autorizado");
         }
         logger.info("aprobando documento por operador...");
+        documento.setEstado(EstadoDocumentacion.APROBADO_OPERADOR);
+        documentacionRepository.save(documento);
     }
 
     @Override
@@ -68,10 +81,72 @@ public class DocumentacionServiceImpl implements DocumentacionService {
             logger.error("no se encuentra el documento");
             throw new NotFoundException("no se encuentra el documento");
         });
-        if(!authorizationService.authorizeDocumentacion("ROLE_OPERADOR", 1l, documento)){
+        Permiso permiso = permisoRepository.findByDescripcion("aprobacion nivel 1").orElseThrow(()->{
+            logger.error("permiso no encontrado");
+            throw new NotFoundException("permiso no encontrado");
+        });
+        if(!authorizationService.authorizeDocumentacion("ROLE_OPERADOR", permiso.getId(), documento)){
             logger.error("no autorizado");
             throw new Unauthorized("no autorizado");
         }
         logger.info("rechazando documento por operador...");
+        documento.setEstado(EstadoDocumentacion.RECHAZADO_OPERADOR);
+        documentacionRepository.save(documento);
+    }
+
+    @Override
+    public void aprobacionSupervisor(Long documentoId) {
+        logger.info("inicio servicio autorizacion documento por supervisor");
+
+        Documentacion documento = documentacionRepository.findById(documentoId).orElseThrow(()->{
+            logger.error("no se encuentra el documento");
+            throw new NotFoundException("no se encuentra el documento");
+        });
+        Permiso permiso = permisoRepository.findByDescripcion("aprobacion nivel 2").orElseThrow(()->{
+            logger.error("permiso no encontrado");
+            throw new NotFoundException("permiso no encontrado");
+        });
+        Comercio comercio = comercioRepository.findById(documento.getComercio().getId()).orElseThrow(()->{
+            logger.error("no se encuentra el comercio");
+            throw new BadRequestException("no se encuentra el comercio");
+        });
+        if(!authorizationService.authorizeDocumentacion("ROLE_SUPERVISOR", permiso.getId(), documento)){
+            logger.error("no autorizado");
+            throw new Unauthorized("no autorizado");
+        }
+        logger.info("aprobando documento por supervisor...");
+        documento.setEstado(EstadoDocumentacion.APROBADO_SUPERVISOR);
+        documentacionRepository.save(documento);
+        comercio.setEstado(EstadoComercio.ACTIVO);
+        comercio.setLimite(false);
+        comercioRepository.save(comercio);
+    }
+
+    @Override
+    public void rechazoSupervisor(Long documentoId) {
+        logger.info("inicio servicio rechazo documento por supervisor");
+
+        Documentacion documento = documentacionRepository.findById(documentoId).orElseThrow(()->{
+            logger.error("no se encuentra el documento");
+            throw new NotFoundException("no se encuentra el documento");
+        });
+        Permiso permiso = permisoRepository.findByDescripcion("aprobacion nivel 2").orElseThrow(()->{
+            logger.error("permiso no encontrado");
+            throw new NotFoundException("permiso no encontrado");
+        });
+        Comercio comercio = comercioRepository.findById(documento.getComercio().getId()).orElseThrow(()->{
+            logger.error("no se encuentra el comercio");
+            throw new BadRequestException("no se encuentra el comercio");
+        });
+        if(!authorizationService.authorizeDocumentacion("ROLE_SUPERVISOR", permiso.getId(), documento)){
+            logger.error("no autorizado");
+            throw new Unauthorized("no autorizado");
+        }
+        logger.info("rechazando documento por supervisor...");
+        documento.setEstado(EstadoDocumentacion.RECHAZADO_SUPERVISOR);
+        documentacionRepository.save(documento);
+        comercio.setEstado(EstadoComercio.DOCUMENTACION_RECHAZADA);
+        comercio.setLimite(true);
+        comercioRepository.save(comercio);
     }
 }

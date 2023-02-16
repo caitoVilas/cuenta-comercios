@@ -1,6 +1,5 @@
 package com.comercios.cuentaComerciosBO.controller;
 
-import com.comercios.cuentaComerciosBO.dto.ComercioDTO;
 import com.comercios.cuentaComerciosBO.dto.DocumentacionDTO;
 import com.comercios.cuentaComerciosBO.service.contract.DocumentacionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,7 +61,35 @@ public class DocumentacionController {
             @ApiResponse(responseCode = "500", description = "server error")
     })
     public ResponseEntity<?> rechazoOperador(@PathVariable Long documentoId){
-        documentacionService.aprobacionOperador(documentoId);
+        documentacionService.rechazoOperador(documentoId);
+        return ResponseEntity.ok(null);
+    }
+
+    @PutMapping("/aprobacion-supervisor/{documentoId}")
+    @Operation(description = "aprobacion de documento por supervisor",
+            summary = "aprobacion de documento por supervisor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "404", description = "not found"),
+            @ApiResponse(responseCode = "401", description = "unauthorized"),
+            @ApiResponse(responseCode = "500", description = "server error")
+    })
+    public ResponseEntity<?> aprobacionSupervisor(@PathVariable Long documentoId){
+        documentacionService.aprobacionSupervisor(documentoId);
+        return ResponseEntity.ok(null);
+    }
+
+    @PutMapping("/rechazo-supervisor/{documentoId}")
+    @Operation(description = "rechazo de documento por supervisor",
+            summary = "rechazo de documento por supervisor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "404", description = "not found"),
+            @ApiResponse(responseCode = "401", description = "unauthorized"),
+            @ApiResponse(responseCode = "500", description = "server error")
+    })
+    public ResponseEntity<?> rechazoSupervisor(@PathVariable Long documentoId){
+        documentacionService.rechazoSupervisor(documentoId);
         return ResponseEntity.ok(null);
     }
 }
