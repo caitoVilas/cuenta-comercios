@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Schema(name = "modelo que representa un comercio para las respuestas")
+@Schema(description = "modelo que representa un comercio para las respuestas")
 public class ComercioDTO {
     @Schema(name = "id")
     private Long id;
