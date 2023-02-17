@@ -16,4 +16,5 @@ public interface ComercioService {
     List<ComercioDTO> verTodos();
     PageableResponseDTO<ComercioDTO> verTodosPaginado(int page, int size);
     void guardarDocumento(MultipartFile file, Long comercioId, DocumentacionTipo dt);
+    ComercioDTO aceptarTyc(Long comercioId, Long tycId);
 }

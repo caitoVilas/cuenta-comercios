@@ -47,4 +47,7 @@ public class Comercio {
     @JsonBackReference
     @JoinColumn(name = "sucursal_radicacion_id")
     private SucursalDeRadicacion sucursalDeRadicacion;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "terminos_condiciones")
+    private TerminosYCondiciones terminosYCondiciones;
 }

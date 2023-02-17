@@ -3,10 +3,7 @@ package com.comercios.cuentaComercios.service.impl;
 import com.comercios.cuentaComercios.dto.ComercioDTO;
 import com.comercios.cuentaComercios.dto.ComercioNuevoDTO;
 import com.comercios.cuentaComercios.dto.PageableResponseDTO;
-import com.comercios.cuentaComercios.entity.Comercio;
-import com.comercios.cuentaComercios.entity.Documentacion;
-import com.comercios.cuentaComercios.entity.SucursalDeRadicacion;
-import com.comercios.cuentaComercios.entity.Usuario;
+import com.comercios.cuentaComercios.entity.*;
 import com.comercios.cuentaComercios.enums.DocumentacionTipo;
 import com.comercios.cuentaComercios.enums.EstadoComercio;
 import com.comercios.cuentaComercios.enums.EstadoDocumentacion;
@@ -14,10 +11,7 @@ import com.comercios.cuentaComercios.exception.BadRequestException;
 import com.comercios.cuentaComercios.exception.NotFoundException;
 import com.comercios.cuentaComercios.mapper.ComercioMapper;
 import com.comercios.cuentaComercios.mapper.SucursalDeRadicacionMapper;
-import com.comercios.cuentaComercios.repository.SucursalDeRadicacionRepository;
-import com.comercios.cuentaComercios.repository.ComercioRepository;
-import com.comercios.cuentaComercios.repository.DocumentacionRepository;
-import com.comercios.cuentaComercios.repository.UsuarioRepository;
+import com.comercios.cuentaComercios.repository.*;
 import com.comercios.cuentaComercios.service.contract.ComercioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +46,8 @@ public class ComercioServiceImpl implements ComercioService {
     private SucursalDeRadicacionRepository sucursalDeRadicacionRepository;
     @Autowired
     private SucursalDeRadicacionMapper sucursalDeRadicacionMapper;
+    @Autowired
+    private TerminosYCondicionesRepository terminosYCondicionesRepository;
 
 
     @Override
@@ -160,5 +156,21 @@ public class ComercioServiceImpl implements ComercioService {
         }catch (Exception e){
             logger.error(e.getMessage());
         }
+    }
+
+    @Override
+    public ComercioDTO aceptarTyc(Long comercioId, Long tycId) {
+        logger.info("inicio servicio aceptar terminos y ondiciones");
+        Comercio comercio = comercioRepository.findById(comercioId).orElseThrow(()->{
+            logger.error("comercio no encontrado");
+            throw new NotFoundException("comercio no encontrado");
+        });
+        TerminosYCondiciones tyc = terminosYCondicionesRepository.findById(tycId).orElseThrow(()->{
+            logger.error("terminos y condiciones no encontrado");
+            throw new NotFoundException("terminos y condiciones no encontrado");
+        });
+        comercio.setTerminosYCondiciones(tyc);
+        comercio = comercioRepository.save(comercio);
+        return comercioMapper.comercioToComercioDTO(comercio);
     }
 }

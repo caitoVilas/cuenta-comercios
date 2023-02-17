@@ -102,4 +102,18 @@ public class ComercioController {
         comercioService.guardarDocumento(file, comercioId, tipoDocumentacion);
         return ResponseEntity.ok(null);
     }
+
+    @PutMapping("/acerpar-tyc")
+    @Operation(description = "aceptar terminos y condiciones", summary = "aceptar terminos y conciones")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "404", description = "not found"),
+            @ApiResponse(responseCode = "401", description = "unauthorized"),
+            @ApiResponse(responseCode = "500", description = "server error")
+    })
+    public ResponseEntity<ComercioDTO> aceptarTyc(@RequestParam Long comercioId,
+                                                  @RequestParam Long tycId){
+        ComercioDTO comercio = comercioService.aceptarTyc(comercioId, tycId);
+        return ResponseEntity.ok(comercio);
+    }
 }

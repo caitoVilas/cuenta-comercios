@@ -37,4 +37,6 @@ public class ComercioDTO {
     private UsuarioDTO usuario;
     @Schema(name = "sucursalDeRadicacion")
     private SucursalDeRadicacionDTO sucursalDeRadicacion;
+    @Schema(name = "terminosYCondiciones")
+    private TerminosYCondicionesDTO terminosYCondiciones;
 }
