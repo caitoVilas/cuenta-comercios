@@ -1,5 +1,6 @@
 package com.comercios.cuentaComerciosBO.service.impl;
 
+import com.comercios.cuentaComerciosBO.constants.ErrorMsg;
 import com.comercios.cuentaComerciosBO.dto.PageableResponseDTO;
 import com.comercios.cuentaComerciosBO.dto.SucursalRadicacionDTO;
 import com.comercios.cuentaComerciosBO.dto.SucursalRadicacionNuevaDTO;
@@ -35,8 +36,8 @@ public class SucursalRadicacionServiceImpl implements SucursalDeRadicacionServic
     public SucursalRadicacionDTO createSucursal(SucursalRadicacionNuevaDTO dto) {
         logger.info("iniciando servicio creacion de sucursal de radicacion");
         if (sucursalDeRadicacionRepository.existsByCodigoSucursal(dto.getCodigoSucursal())){
-            logger.error("el codigo de sucursal ya esta registrado");
-            throw new BadRequestException("el codigo de sucursal ya esta registrado");
+            logger.error(ErrorMsg.BRANCH_CODE_EXISTS);
+            throw new BadRequestException(ErrorMsg.BRANCH_CODE_EXISTS);
         }
         logger.info("creando sucursal de radicacion...");
         return sucursalDeRadicacionMapper.sucursalDeRadicacionToSucursalDeRadicionDTO(
@@ -50,8 +51,8 @@ public class SucursalRadicacionServiceImpl implements SucursalDeRadicacionServic
         SucursalDeRadicacion sucursalDeRadicacion = sucursalDeRadicacionRepository
                 .findByCodigoSucursal(codigoSucursal);
         if (sucursalDeRadicacion == null){
-            logger.error("la sucursal de radicacion no se encuentra");
-            throw new NotFoundException("la sucursal de radicacion no se encuentra");
+            logger.error(ErrorMsg.BRANCH_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.BRANCH_NOT_FOUND);
         }
         logger.info("buscando sucursal de radicacion...");
         return sucursalDeRadicacionMapper.sucursalDeRadicacionToSucursalDeRadicionDTO(sucursalDeRadicacion);
@@ -69,8 +70,8 @@ public class SucursalRadicacionServiceImpl implements SucursalDeRadicacionServic
     public PageableResponseDTO<SucursalRadicacionDTO> verTodoPaginado(int page, int size) {
         logger.info("inicio servicio buscar todos las sucursales de radicion paginado");
         if (page <= 0){
-            logger.error("la pagina debe ser mayor que 0");
-            throw new BadRequestException("la pagina debe ser mayor que 0");
+            logger.error(ErrorMsg.PAGE_GREATER_ZERO);
+            throw new BadRequestException(ErrorMsg.PAGE_GREATER_ZERO);
         }
         logger.info("buscando sucursales de radicacion...");
         Pageable pageable = PageRequest.of(page - 1, size);

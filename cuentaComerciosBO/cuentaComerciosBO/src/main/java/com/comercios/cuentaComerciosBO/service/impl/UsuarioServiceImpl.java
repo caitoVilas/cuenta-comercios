@@ -1,5 +1,6 @@
 package com.comercios.cuentaComerciosBO.service.impl;
 
+import com.comercios.cuentaComerciosBO.constants.ErrorMsg;
 import com.comercios.cuentaComerciosBO.dto.*;
 import com.comercios.cuentaComerciosBO.entity.Rol;
 import com.comercios.cuentaComerciosBO.entity.SucursalDeRadicacion;
@@ -63,16 +64,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioDTO crearUsuario(UsuarioNuevoDTO dto) {
         logger.info("inicio servicio alta usuarios");
         if (personaService.existeXDni(dto.getPersona().getDni())){
-            logger.error("el DNI ya esta registrado");
-            throw new BadRequestException("el DNI ya esta registrado");
+            logger.error(ErrorMsg.USER_DNI_EXISTS);
+            throw new BadRequestException(ErrorMsg.USER_DNI_EXISTS);
         }
         if (personaService.existeXEmail(dto.getPersona().getEmail())){
-            logger.error("el email ya esta registrado");
-            throw new BadRequestException("el email ya esta registrado");
+            logger.error(ErrorMsg.USER_MAIL_EXISTS);
+            throw new BadRequestException(ErrorMsg.USER_MAIL_EXISTS);
         }
         if (usuarioRepository.existsByUsername(dto.getUsername())){
-            logger.error("el nombre de usuario ya esta registrado");
-            throw new BadRequestException("el nombre de usuario ya esta registrado");
+            logger.error(ErrorMsg.USER_USERNAME_EXISTS);
+            throw new BadRequestException(ErrorMsg.USER_USERNAME_EXISTS);
         }
         logger.info("creando usuario...");
         List<Rol> roles = new ArrayList<>();
@@ -99,8 +100,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioDTO buscarPorId(Long id) {
         logger.info("iniciando servicio buscar usuario por id");
         UsuarioBO usuario = usuarioRepository.findById(id).orElseThrow(()->{
-            logger.error("el usuario no se encuentra");
-            throw new NotFoundException("el usuario no se encuentra");
+            logger.error(ErrorMsg.USER_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.USER_NOT_FOUND);
         });
         logger.info("buscando usuario...");
         return usuarioMapper.usuarioToUsuarioDTO(usuario);
@@ -116,8 +117,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     public PageableResponseDTO<UsuarioDTO> buscarTodosPaginado(int page, int size) {
         logger.info("inicio servicio buscar todos los usuarios paginado");
         if (page <= 0){
-            logger.error("la pagina debe ser mayor que 0");
-            throw new BadRequestException("la pagina debe ser mayor que 0");
+            logger.error(ErrorMsg.PAGE_GREATER_ZERO);
+            throw new BadRequestException(ErrorMsg.PAGE_GREATER_ZERO);
         }
         logger.info("buscando usuarios...");
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -135,8 +136,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void eliminarUsuario(Long id) {
         logger.info("inicio servicio eliminar usuario");
         UsuarioBO usuario = usuarioRepository.findById(id).orElseThrow(()->{
-            logger.error("el usuario no se encuentra");
-            throw new NotFoundException("el usuario no se encuentra");
+            logger.error(ErrorMsg.USER_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.USER_NOT_FOUND);
         });
         logger.info("eliminando usuario...");
         usuarioRepository.deleteById(id);
@@ -150,8 +151,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
         UsuarioBO usuarioBO = usuarioRepository.findByUsername(dto.getUsername()).orElseThrow(()->{
-            logger.error("el usuario no se encuentra");
-            throw new NotFoundException("el usuario no se encuentra");
+            logger.error(ErrorMsg.USER_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.USER_NOT_FOUND);
         });
         LoginResponseDTO response = new LoginResponseDTO();
         response.setToken(token);

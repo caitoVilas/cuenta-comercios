@@ -1,5 +1,6 @@
 package com.comercios.cuentaComerciosBO.service.impl;
 
+import com.comercios.cuentaComerciosBO.constants.ErrorMsg;
 import com.comercios.cuentaComerciosBO.dto.ComercioDTO;
 import com.comercios.cuentaComerciosBO.dto.PageableResponseDTO;
 import com.comercios.cuentaComerciosBO.dto.TerminnosYCondicionesNuevoDTO;
@@ -48,8 +49,8 @@ public class TerminosYCondicionesServiceImpl implements TerminosYCondicionesServ
         logger.info("subiendo documento...");
         try {
             if (file.isEmpty()){
-                logger.error("archivo sin contenido");
-                throw new BadRequestException("archivo sin contenido");
+                logger.error(ErrorMsg.FILE_NO_CONTENT);
+                throw new BadRequestException(ErrorMsg.FILE_NO_CONTENT);
             }
             byte[] fileBytes = file.getBytes();
             String nombreArchivo = UUID.randomUUID().toString().concat(file.getOriginalFilename());
@@ -71,8 +72,8 @@ public class TerminosYCondicionesServiceImpl implements TerminosYCondicionesServ
     public TerminosYCondicionesDTO buscarPorId(Long id) {
         logger.info("inicio servicio buscar termnos y condiciones por id");
         TerminosYCondiciones tyc = terminosYCondicionesRepository.findById(id).orElseThrow(()->{
-            logger.error("terminos y condiciones no se encuentra");
-            throw new NotFoundException("terminos y condiciones no se encuentra");
+            logger.error(ErrorMsg.TYC_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.TYC_NOT_FOUND);
         });
         return terminosYCondicionesMapper.tycToTycDTO(tyc);
     }
@@ -81,8 +82,8 @@ public class TerminosYCondicionesServiceImpl implements TerminosYCondicionesServ
     public PageableResponseDTO<TerminosYCondicionesDTO> verTodosPaginado(int page, int size) {
         logger.info("inicio servicio buscar todos los terminos y condiciones paginado");
         if (page <= 0){
-            logger.error("la pagina debe ser mayor que 0");
-            throw new BadRequestException("la pagina debe ser mayor que 0");
+            logger.error(ErrorMsg.PAGE_GREATER_ZERO);
+            throw new BadRequestException(ErrorMsg.PAGE_GREATER_ZERO);
         }
         logger.info("buscando terminos y condiciones...");
         Pageable pageable = PageRequest.of(page - 1, size);

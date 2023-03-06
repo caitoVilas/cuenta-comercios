@@ -1,5 +1,6 @@
 package com.comercios.cuentaComerciosBO.service.impl;
 
+import com.comercios.cuentaComerciosBO.constants.ErrorMsg;
 import com.comercios.cuentaComerciosBO.dto.ComercioDTO;
 import com.comercios.cuentaComerciosBO.dto.PageableResponseDTO;
 import com.comercios.cuentaComerciosBO.dto.UsuarioAppDTO;
@@ -33,8 +34,8 @@ public class UsuariosAppServiceImpl implements UsuariosAppService {
     public UsuarioAppDTO buscarPorId(Long id) {
         logger.info("inicio servicio buscar usuario app por id");
         Usuario usuario = usuarioAppRepository.findById(id).orElseThrow(()->{
-            logger.error("el usuario no se encuentra");
-            throw new NotFoundException("el usuario no se encuentra");
+            logger.error(ErrorMsg.USER_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.USER_NOT_FOUND);
         });
         logger.info("buscando usuario...");
         return usuarioAppMapper.usuarioToUsuarioAppDTO(usuario);
@@ -51,8 +52,8 @@ public class UsuariosAppServiceImpl implements UsuariosAppService {
     public PageableResponseDTO<UsuarioAppDTO> verTodosPaginado(int page, int size) {
         logger.info("inicio servicio buscar todos los usuarios paginado");
         if (page <= 0){
-            logger.error("la pagina debe ser mayor que 0");
-            throw new BadRequestException("la pagina debe ser mayor que 0");
+            logger.error(ErrorMsg.PAGE_GREATER_ZERO);
+            throw new BadRequestException(ErrorMsg.PAGE_GREATER_ZERO);
         }
         logger.info("buscando usuarios...");
         Pageable pageable = PageRequest.of(page - 1, size);
