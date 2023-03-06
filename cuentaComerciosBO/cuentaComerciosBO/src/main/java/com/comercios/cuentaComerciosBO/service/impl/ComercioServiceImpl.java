@@ -1,5 +1,6 @@
 package com.comercios.cuentaComerciosBO.service.impl;
 
+import com.comercios.cuentaComerciosBO.constants.ErrorMsg;
 import com.comercios.cuentaComerciosBO.dto.ComercioDTO;
 import com.comercios.cuentaComerciosBO.dto.PageableResponseDTO;
 import com.comercios.cuentaComerciosBO.entity.Comercio;
@@ -31,8 +32,8 @@ public class ComercioServiceImpl implements ComercioService {
     public ComercioDTO buscarPorId(Long id) {
         logger.info("inicio servicio buscar comercio por id");
         Comercio comercio = comercioRepository.findById(id).orElseThrow(()->{
-            logger.error("el comercio no se encuentra");
-            throw new NotFoundException("el comercio no se encuentra");
+            logger.error(ErrorMsg.TRADE_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.TRADE_NOT_FOUND);
         });
         logger.info("buscando comercio...");
         return comercioMapper.comercioToComercioDTO(comercio);
@@ -49,8 +50,8 @@ public class ComercioServiceImpl implements ComercioService {
     public PageableResponseDTO<ComercioDTO> verTodosPaginado(int page, int size) {
         logger.info("inicio servicio buscar todos los comercios paginado");
         if (page <= 0){
-            logger.error("la pagina debe ser mayor que 0");
-            throw new BadRequestException("la pagina debe ser mayor que 0");
+            logger.error(ErrorMsg.PAGE_GREATER_ZERO);
+            throw new BadRequestException(ErrorMsg.PAGE_GREATER_ZERO);
         }
         logger.info("buscando comercios...");
         Pageable pageable = PageRequest.of(page - 1, size);

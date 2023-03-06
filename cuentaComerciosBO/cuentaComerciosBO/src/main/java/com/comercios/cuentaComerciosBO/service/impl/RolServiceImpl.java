@@ -1,5 +1,6 @@
 package com.comercios.cuentaComerciosBO.service.impl;
 
+import com.comercios.cuentaComerciosBO.constants.ErrorMsg;
 import com.comercios.cuentaComerciosBO.dto.PageableResponseDTO;
 import com.comercios.cuentaComerciosBO.dto.RolDTO;
 import com.comercios.cuentaComerciosBO.dto.RolNuevoDTO;
@@ -43,8 +44,8 @@ public class RolServiceImpl implements RolService {
     public RolDTO createRol(RolNuevoDTO dto) {
         logger.info("inicio servicio alta de rol");
         if (rolRepository.existsByRolName(dto.getRolName())){
-            logger.error("el rol ya existe");
-            throw new BadRequestException("el rol ya existe");
+            logger.error(ErrorMsg.ROL_EXISTS);
+            throw new BadRequestException(ErrorMsg.ROL_EXISTS);
         }
         logger.info("guardando rol...");
         return rolMapper.rolToRolDTO(rolRepository.save(rolNuevoMapper.rolNuevoDTOToRol(dto)));
@@ -54,8 +55,8 @@ public class RolServiceImpl implements RolService {
     public RolDTO buscarPorId(Long rolId) {
         logger.info("inicio servicio busqueda de rol por id");
         Rol rol = rolRepository.findById(rolId).orElseThrow(()->{
-            logger.error("el rol no existe");
-            throw new NotFoundException("el rol no existe");
+            logger.error(ErrorMsg.ROL_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.ROL_EXISTS);
         });
         logger.info("buscando rol...");
         return rolMapper.rolToRolDTO(rol);
@@ -72,8 +73,8 @@ public class RolServiceImpl implements RolService {
     public PageableResponseDTO<RolDTO> buscarPaginado(int page, int size) {
         logger.info("inicio servivio roles paginado");
         if (page <= 0){
-            logger.error("la pagina debe ser mayor que 0");
-            throw new BadRequestException("la pagina debe ser mayor que 0");
+            logger.error(ErrorMsg.PAGE_GREATER_ZERO);
+            throw new BadRequestException(ErrorMsg.PAGE_GREATER_ZERO);
         }
         logger.info("buscando roles...");
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -91,8 +92,8 @@ public class RolServiceImpl implements RolService {
     public void eliminarRol(Long rolId) {
         logger.info("inicio servicio eliminar rol");
         Rol rol = rolRepository.findById(rolId).orElseThrow(()->{
-            logger.error("el rol no exixte");
-            throw new NotFoundException("el rol no exixte");
+            logger.error(ErrorMsg.ROL_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.ROL_NOT_FOUND);
         });
         logger.info("eliminando rol...");
         rolRepository.deleteById(rolId);
@@ -107,14 +108,14 @@ public class RolServiceImpl implements RolService {
     public RolDTO asignarPermisos(Long rolId, List<Long> permisos) {
         logger.info("inicio servicio asignar permisis a roles");
         Rol rol = rolRepository.findById(rolId).orElseThrow(()->{
-            logger.error("rol no encontrado");
-            throw new NotFoundException("rol no encontrado");
+            logger.error(ErrorMsg.ROL_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.ROL_NOT_FOUND);
         });
         List<Permiso> p = new ArrayList<>();
         permisos.stream().forEach(permiso ->{
             Permiso per = permisoRepository.findById(permiso).orElseThrow(()->{
-                logger.error("permiso no encontrado");
-                throw new NotFoundException("permiso no encontrado");
+                logger.error(ErrorMsg.PERMISSION_NOT_FOUND);
+                throw new NotFoundException(ErrorMsg.PERMISSION_NOT_FOUND);
             });
             p.add(per);
         });

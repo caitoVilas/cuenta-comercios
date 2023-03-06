@@ -1,5 +1,6 @@
 package com.comercios.cuentaComerciosBO.service.impl;
 
+import com.comercios.cuentaComerciosBO.constants.ErrorMsg;
 import com.comercios.cuentaComerciosBO.dto.PageableResponseDTO;
 import com.comercios.cuentaComerciosBO.dto.PermisoDTO;
 import com.comercios.cuentaComerciosBO.dto.PermisoNuevoDTO;
@@ -35,8 +36,8 @@ public class PermisoServiceImpl implements PermisoService {
     public PermisoDTO crearPermiso(PermisoNuevoDTO dto) {
         logger.info("inicio servicio crear permiso");
         if (permisoRepository.existsByDescripcion(dto.getDescripcion())){
-            logger.error("el permiso ya existe");
-            throw new BadRequestException("el permiso ya existe");
+            logger.error(ErrorMsg.PERMISSION_EXISTS);
+            throw new BadRequestException(ErrorMsg.PERMISSION_EXISTS);
         }
         logger.info("guardando permiso...");
         return permisoMapper.permisoToPermisoDTO(permisoRepository.save(permisoNuevoMapper
@@ -47,8 +48,8 @@ public class PermisoServiceImpl implements PermisoService {
     public PermisoDTO buscarXId(Long id) {
         logger.info("iniciando servicio buscar permiso por id");
         Permiso permiso = permisoRepository.findById(id).orElseThrow(()->{
-            logger.error("permiso no encontrado");
-            throw new NotFoundException("permiso no encontrado");
+            logger.error(ErrorMsg.PERMISSION_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.PERMISSION_NOT_FOUND);
         });
         logger.info("buscando permiso...");
         return permisoMapper.permisoToPermisoDTO(permiso);
@@ -65,8 +66,8 @@ public class PermisoServiceImpl implements PermisoService {
     public PageableResponseDTO<PermisoDTO> buscarTodosPaginado(int page, int size) {
         logger.info("iniciando servicio buscar todos permisos paginado");
         if (page <= 0){
-            logger.error("la pagina debe ser mayor que 0");
-            throw new BadRequestException("la pagina debe ser mayor que 0");
+            logger.error(ErrorMsg.PAGE_GREATER_ZERO);
+            throw new BadRequestException(ErrorMsg.PAGE_GREATER_ZERO);
         }
         logger.info("buscando permisos...");
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -84,8 +85,8 @@ public class PermisoServiceImpl implements PermisoService {
     public void eliminarPermiso(Long id) {
         logger.info("inicio servicio eliminar permiso");
         Permiso permiso = permisoRepository.findById(id).orElseThrow(()->{
-            logger.error("permiso no encontrado");
-            throw new NotFoundException("permiso no encontrado");
+            logger.error(ErrorMsg.PERMISSION_NOT_FOUND);
+            throw new NotFoundException(ErrorMsg.PERMISSION_NOT_FOUND);
         });
         logger.info("eliminando permiso...");
         permisoRepository.deleteById(id);

@@ -1,9 +1,10 @@
 package com.comercios.cuentaComerciosBO.service.impl;
 
+import com.comercios.cuentaComerciosBO.constants.ErrorMsg;
+import com.comercios.cuentaComerciosBO.constants.SuccessMsg;
 import com.comercios.cuentaComerciosBO.entity.Documentacion;
 import com.comercios.cuentaComerciosBO.entity.Permiso;
 import com.comercios.cuentaComerciosBO.entity.Rol;
-import com.comercios.cuentaComerciosBO.entity.SucursalDeRadicacion;
 import com.comercios.cuentaComerciosBO.exception.BadRequestException;
 import com.comercios.cuentaComerciosBO.repository.DocumentacionRepository;
 import com.comercios.cuentaComerciosBO.repository.PermisoRepository;
@@ -56,13 +57,13 @@ public class AuthorizationService {
                 if (!documento.getComercio().getSucursalDeRadicacion().getCodigoSucursal().equals(
                         ((LinkedHashMap) sucursalObject).get("codigoSucursal")
                 )){
-                    logger.error("no corresponde a sucursal de radicacion");
-                    throw new BadRequestException("no corresponde a sucursal de radicacion");
+                    logger.error(ErrorMsg.NO_SUCURSAL);
+                    throw new BadRequestException(ErrorMsg.NO_SUCURSAL);
                 }
-                logger.info("autorizado");
+                logger.info(SuccessMsg.AUTORIZED);
                 return true;
             }
-        logger.error("no autorizado");
+        logger.error(ErrorMsg.UNAUTORIZED);
         return false;
     }
 }
